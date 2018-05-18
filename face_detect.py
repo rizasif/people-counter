@@ -1,7 +1,7 @@
 import face_recognition
 from PIL import Image
 
-image = face_recognition.load_image_file("data/test.png")
+image = face_recognition.load_image_file("data/test2.png")
 faces = face_recognition.face_locations(image)
 
 print faces
