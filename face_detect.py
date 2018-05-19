@@ -12,6 +12,10 @@ for location in faces:
 
 	face_image = image[top:bottom, left:right]
 	pil_image = Image.fromarray(face_image)
+
+	face_encoding = face_recognition.face_encodings(face_image)[0]
+	print "face_encoding: ", face_encoding
+
 	pil_image.show()
 
 # if len(faces) == 0:
