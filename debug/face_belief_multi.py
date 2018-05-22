@@ -24,42 +24,49 @@ def threshold(val):
     val = float(1) + (val/float(75))
     return val
 
-def get_result(p1,p2):
+def get_result(p1,p2,p3):
     # print "Checking {} : {}".format(p1,p2)
 
     image1 = face_recognition.load_image_file("../data/" + p1)
     image2 = face_recognition.load_image_file("../data/" + p2)
+    image3 = face_recognition.load_image_file("../data/" + p3)
 
     face_encoding1 = face_recognition.face_encodings(image1)[0]
     face_encoding2 = face_recognition.face_encodings(image2)[0]
+    face_encoding3 = face_recognition.face_encodings(image3)[0]
 
     face_encoding1 = np.array(face_encoding1)
     face_encoding2 = np.array(face_encoding2)
+    face_encoding3 = np.array(face_encoding3)
 
     # b = calculate_beleif(image1, image2)
     # print "Belief Factor: ", b
 
     s1 = get_sharpness(image1)
     s2 = get_sharpness(image2)
+    s3 = get_sharpness(image3)
 
     # print "Original Image1 Belief: ", s1
     # print "Original Image2 Belief: ", s2
 
     bs1 = threshold(s1)
     bs2 = threshold(s2)
+    bs3 = threshold(s3)
 
     # print "Image1 Belief: ", bs1
     # print "Image2 Belief: ", bs2
 
     face_encoding1 = face_encoding1*bs1
     face_encoding2 = face_encoding2*bs2
+    face_encoding3 = face_encoding3*bs3
 
     print "Image1 Sum: ", np.sqrt(np.sum(face_encoding1**2))
     print "Image2 Sum: ", np.sqrt(np.sum(face_encoding2**2))
+    print "Image3 Sum: ", np.sqrt(np.sum(face_encoding3**2))
 
-    results = face_recognition.compare_faces([face_encoding1], face_encoding2)
-    # print results
-    return results[0]
+    results = face_recognition.compare_faces([face_encoding2, face_encoding3], face_encoding1)
+    # print "results: ", results
+    return results
 
 
 #--------------------------------------------------
@@ -71,37 +78,4 @@ typeE = ['faceE1.png', 'faceE2.png']
 
 AllTypes = [typeA, typeB, typeC, typeD, typeE]
 
-total = 0
-false_negatives = 0
-for type in AllTypes:
-    if(len(type) == 2):
-        if not get_result(type[0], type[1]):
-            false_negatives += 1
-            print "False"
-        total += 1
-    elif(len(type) == 3):
-        if not get_result(type[0], type[1]):
-            false_negatives += 1
-            print "False"
-        if not get_result(type[1], type[2]):
-            false_negatives += 1
-            print "False"
-        if not get_result(type[0], type[2]):
-            false_negatives += 1
-            print "False"
-        total += 3
-print "\nFalse Negatives {} of {}".format(false_negatives, total)
-
-total = 0
-false_positives = 0
-for i in range(len(AllTypes)):
-    otype = AllTypes.pop()
-    for subOType in otype:
-        for cType in AllTypes:
-            for subCType in cType:
-                if get_result(subOType, subCType):
-                   false_positives += 1
-                   print "False"
-                total += 1 
-
-print "False Positives {} of {}".format(false_positives, total)
+print get_result(typeA[0], typeB[1], typeB[0])

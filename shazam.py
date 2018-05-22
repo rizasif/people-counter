@@ -1,10 +1,10 @@
-import face_recognition
 import numpy as np
-from PIL import Image
 
 from person import Person
+import algorithm as Al
 
 SEARCH_THRESHOLD = float(0.10)
+PERSON_THRESHOLD = 10
 
 class Shazam():
 
@@ -20,12 +20,31 @@ class Shazam():
 	def checkInRange(self, val, first, last):
 		return (val >= first) and (val <= last)
 
+	def getNumOfPersons(self):
+    	return len(self.personList)
+
+	def incrementApperance(self, index):
+    	self.personList[index].incrementApperance()
+
+	def updatePerson(new_person, index):
+    	new_person.clearPilImage()
+    	p = self.personList[index]
+		p.incrementApperance()
+		new_person.updateApprerance(p.getApperance())
+		self.personList[index] = new_person
+		self.sortSumIndexes()
+
 	def addPerson(self, person):
+    	person.clearPilImage()
 		self.personList.append(person)
 		self.sortSumIndexes()
 
-	def checkIfImageExists():
-    		
+	def addNewPerson(self, person):
+    	person.clearPilImage()
+    	person.setId(self.next_id)
+		self.next_id += 1
+		self.personList.append(person)
+		self.sortSumIndexes()
 	
 	def lookUpSumIndex(self, item):
 		a_list = self.sorted_sum_index
@@ -66,6 +85,36 @@ class Shazam():
 			return a_list[start_index : end_index]
 		else:
 			return None
+
+	def ProcessImage(self, image):
+    	person_list = Al.getFaces(image)
+		for k in range(len(person_list)):
+    		p = person_list[k]
+    		matches = self.lookUpSumIndex(p)
+			if matches:
+    			match_codes = [x.getEncoding() for x in matches]
+				match_results = Al.compare(match_codes)
+				
+				positive_matches = list()
+				best_match = None
+				best_match_val = 1000
+				for i in range(len(match_results)):
+    				if match_results[i]:
+    					positive_matches.append(i)
+						pm = matches[i]
+						new_val = abs(pm.getSumIndex() - p.getSumIndex())
+						if best_match_val > new_val:
+    						best_match_val = new_val
+							best_match = pm
+				if best_match:
+    				if best_match.getSharpness() < p.getSharpness():
+    					self.updatePerson(best_match, k)
+					else:
+    					self.incrementApperance(k)
+				else:
+    				self.addNewPerson(p)
+			else:
+    			self.addNewPerson(p)
 
 if __name__ == "__main__":
 	shazam = Shazam()
