@@ -15,8 +15,9 @@ def threshold(val):
     val = float(1) + (val/THRESHOLD_NORMALIZER)
     return val
 
-def getEncoding(image, sharpness):
-	encoding = face_recognition.face_encodings(image)
+def getEncoding(image, sharpness, image_size):
+	encoding = face_recognition.face_encodings(image,
+					known_face_locations=[(0,image_size[0], image_size[1],0)])
 	# print "encoding: ", encoding
 	if len(encoding) == 0:
 		return None
@@ -49,10 +50,12 @@ def getFaces(image):
 		# print "Face Location {} {} {} {}".format(top,right,bottom,left)
 		face_image = image[top:bottom, left:right]
 		pil_image = getPilImage(face_image)
+		width, height = pil_image.size
 
 		'''Calculating Params'''
 		face_sharpness = get_sharpness(pil_image)
-		face_encoding = getEncoding(face_image, face_sharpness)
+		# TODO: Pass the known face locations for better accuracy
+		face_encoding = getEncoding(face_image, face_sharpness, [width, height])
 
 		if face_encoding is None:
 			print "Face Encoding Failed"
