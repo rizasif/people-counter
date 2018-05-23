@@ -16,7 +16,12 @@ def threshold(val):
     return val
 
 def getEncoding(image, sharpness):
-	encoding = face_recognition.face_encodings(image)[0]
+	encoding = face_recognition.face_encodings(image)
+	# print "encoding: ", encoding
+	if len(encoding) == 0:
+		return None
+
+	encoding = encoding[0]
 	encoding = np.array(encoding)
 	
 	thresh = threshold(sharpness)
@@ -24,6 +29,7 @@ def getEncoding(image, sharpness):
 
 def getPilImage(image):
 	pil_image = Image.fromarray(image)
+	return pil_image
 
 def get_sharpness(pil_image):
 	pil_image = pil_image.convert('L')
@@ -40,12 +46,18 @@ def getFaces(image):
 	person_list = list()
 	for location in faces:
 		top, right, bottom, left = location
+		# print "Face Location {} {} {} {}".format(top,right,bottom,left)
 		face_image = image[top:bottom, left:right]
 		pil_image = getPilImage(face_image)
 
 		'''Calculating Params'''
 		face_sharpness = get_sharpness(pil_image)
 		face_encoding = getEncoding(face_image, face_sharpness)
+
+		if face_encoding is None:
+			print "Face Encoding Failed"
+			continue
+
 		face_sum_index = getSumIndex(face_encoding)
 
 		person = Person(sharpness=face_sharpness, sum_index=face_sum_index,

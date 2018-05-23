@@ -21,27 +21,27 @@ class Shazam():
 		return (val >= first) and (val <= last)
 
 	def getNumOfPersons(self):
-    	return len(self.personList)
+		return len(self.personList)
 
 	def incrementApperance(self, index):
-    	self.personList[index].incrementApperance()
+		self.personList[index].incrementApperance()
 
 	def updatePerson(new_person, index):
-    	new_person.clearPilImage()
-    	p = self.personList[index]
+		new_person.clearPilImage()
+		p = self.personList[index]
 		p.incrementApperance()
 		new_person.updateApprerance(p.getApperance())
 		self.personList[index] = new_person
 		self.sortSumIndexes()
 
 	def addPerson(self, person):
-    	person.clearPilImage()
+		person.clearPilImage()
 		self.personList.append(person)
 		self.sortSumIndexes()
 
 	def addNewPerson(self, person):
-    	person.clearPilImage()
-    	person.setId(self.next_id)
+		person.clearPilImage()
+		person.setId(self.next_id)
 		self.next_id += 1
 		self.personList.append(person)
 		self.sortSumIndexes()
@@ -49,7 +49,7 @@ class Shazam():
 	def lookUpSumIndex(self, item):
 		a_list = self.sorted_sum_index
 
-		if(type(Person) is type(item)):
+		if(isinstance(item, Person)):
 			index = item.getSumIndex()
 		else:
 			index = item
@@ -77,7 +77,7 @@ class Shazam():
 				break
 
 		if(start_found and end_found):
-			print str(start_index)+" - "+str(end_index)
+			# print str(start_index)+" - "+str(end_index)
 			if start_index == end_index:
 				return [a_list[start_index]]
 			elif end_index < len(a_list)-1:
@@ -87,34 +87,37 @@ class Shazam():
 			return None
 
 	def ProcessImage(self, image):
-    	person_list = Al.getFaces(image)
+		person_list = Al.getFaces(image)
 		for k in range(len(person_list)):
-    		p = person_list[k]
-    		matches = self.lookUpSumIndex(p)
+			p = person_list[k]
+			matches = self.lookUpSumIndex(p)
 			if matches:
-    			match_codes = [x.getEncoding() for x in matches]
-				match_results = Al.compare(match_codes)
+				match_codes = [x.getEncoding() for x in matches]
+				match_results = Al.compare(p.getEncoding(), match_codes)
 				
 				positive_matches = list()
 				best_match = None
 				best_match_val = 1000
 				for i in range(len(match_results)):
-    				if match_results[i]:
-    					positive_matches.append(i)
+					if match_results[i]:
+						positive_matches.append(i)
 						pm = matches[i]
 						new_val = abs(pm.getSumIndex() - p.getSumIndex())
 						if best_match_val > new_val:
-    						best_match_val = new_val
+							best_match_val = new_val
 							best_match = pm
 				if best_match:
-    				if best_match.getSharpness() < p.getSharpness():
-    					self.updatePerson(best_match, k)
+					if best_match.getSharpness() < p.getSharpness():
+						self.updatePerson(best_match, k)
 					else:
-    					self.incrementApperance(k)
+						self.incrementApperance(k)
 				else:
-    				self.addNewPerson(p)
+					self.addNewPerson(p)
 			else:
-    			self.addNewPerson(p)
+				self.addNewPerson(p)
+
+	def printResults(self):
+		print "Total People: ", len(self.personList)
 
 if __name__ == "__main__":
 	shazam = Shazam()
@@ -145,4 +148,12 @@ if __name__ == "__main__":
 	# for l in x:
 	# 	print l.getSumIndex()
 
+	test_images = ['test.png', 'test2.png', 'test3.png', 'test4.png',
+					 'test5.png', 'test6.png', 'test7.png']
 	
+	for t in test_images:
+		print "Processing Image: ", t
+		image = Al.read_image_from_disk(t)
+		shazam.ProcessImage(image)
+
+	shazam.printResults()
