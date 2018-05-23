@@ -7,7 +7,7 @@ class Person():
     pil_image = None
     img_array = list()
 
-    def __init__(self, id=-1, sharpness, sum_index, encodings, pil_image=-1, img_array):
+    def __init__(self, sharpness, sum_index, encodings, img_array, pil_image=-1, id=-1):
         self.id = id
         self.sharpness = sharpness
         self.sum_index = sum_index
