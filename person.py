@@ -22,6 +22,9 @@ class Person():
 
     def setId(self, id):
         self.id = id
+    
+    def getId(self):
+        return self.id
 
     def getEncoding(self):
         return self.encodings
@@ -40,4 +43,14 @@ class Person():
 
     def clearPilImage(self):
         self.pil_image = None
+
+    def saveImage(self, directory_name):
+        assert(directory_name[len(directory_name)-1] == "/")
+        assert(self.pil_image)
+        assert(self.id > -1)
+
+        if self.pil_image:
+            self.pil_image.save(directory_name + str(self.id) + ".jpg")
+        else:
+            print "WARNING: PIL Image Already Cleared"
         

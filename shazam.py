@@ -5,6 +5,7 @@ import algorithm as Al
 
 SEARCH_THRESHOLD = float(0.10)
 PERSON_THRESHOLD = 10
+SAVE_DIRECTORY = "data/faces/"
 
 class Shazam():
 
@@ -26,22 +27,27 @@ class Shazam():
 	def incrementApperance(self, index):
 		self.personList[index].incrementApperance()
 
-	def updatePerson(new_person, index):
-		new_person.clearPilImage()
+	def updatePerson(self, new_person, index):
 		p = self.personList[index]
 		p.incrementApperance()
+		new_person.setId(p.getId())
 		new_person.updateApprerance(p.getApperance())
-		self.personList[index] = new_person
+		new_person.saveImage(SAVE_DIRECTORY)
+		new_person.clearPilImage()
+		# self.personList[index] = new_person
+		self.sorted_sum_index[index] = new_person
+		self.personList = self.sorted_sum_index
 		self.sortSumIndexes()
 
-	def addPerson(self, person):
-		person.clearPilImage()
-		self.personList.append(person)
-		self.sortSumIndexes()
+	# def addPerson(self, person):
+	# 	person.clearPilImage()
+	# 	self.personList.append(person)
+	# 	self.sortSumIndexes()
 
 	def addNewPerson(self, person):
-		person.clearPilImage()
 		person.setId(self.next_id)
+		person.saveImage(SAVE_DIRECTORY)
+		person.clearPilImage()
 		self.next_id += 1
 		self.personList.append(person)
 		self.sortSumIndexes()
@@ -63,7 +69,7 @@ class Shazam():
 		start_found = False
 		for i in range(len(a_list)):
 			val = a_list[i].getSumIndex()
-			if self.checkInRange(val, first, end_index):
+			if self.checkInRange(val, first, a_list[end_index].getSumIndex()):
 				start_index = i
 				start_found = True
 				break
@@ -71,7 +77,7 @@ class Shazam():
 		end_found = False
 		for i in range(len(a_list)):
 			val = a_list[ end_index - i].getSumIndex()
-			if self.checkInRange(val, 0, last):
+			if self.checkInRange(val, a_list[0].getSumIndex(), last):
 				end_index = end_index - i
 				end_found = True
 				break
@@ -79,18 +85,18 @@ class Shazam():
 		if(start_found and end_found):
 			# print str(start_index)+" - "+str(end_index)
 			if start_index == end_index:
-				return [a_list[start_index]]
+				return start_index, [a_list[start_index]]
 			elif end_index < len(a_list)-1:
-				return a_list[start_index : end_index+1]
-			return a_list[start_index : end_index]
+				return start_index,a_list[start_index : end_index+1]
+			return start_index,a_list[start_index : end_index]
 		else:
-			return None
+			return None, None
 
 	def ProcessImage(self, image):
 		person_list = Al.getFaces(image)
 		for k in range(len(person_list)):
 			p = person_list[k]
-			matches = self.lookUpSumIndex(p)
+			match_start_index, matches = self.lookUpSumIndex(p)
 			if matches:
 				match_codes = [x.getEncoding() for x in matches]
 				match_results = Al.compare(p.getEncoding(), match_codes)
@@ -98,6 +104,7 @@ class Shazam():
 				positive_matches = list()
 				best_match = None
 				best_match_val = 1000
+				best_match_index = 0
 				for i in range(len(match_results)):
 					if match_results[i]:
 						positive_matches.append(i)
@@ -106,9 +113,11 @@ class Shazam():
 						if best_match_val > new_val:
 							best_match_val = new_val
 							best_match = pm
+							best_match_index = i
 				if best_match:
 					if best_match.getSharpness() < p.getSharpness():
-						self.updatePerson(best_match, k)
+						print "start={}, k={}, t={}".format(match_start_index, best_match_index, len(self.sorted_sum_index))
+						self.updatePerson(p, match_start_index + best_match_index)
 					else:
 						self.incrementApperance(k)
 				else:

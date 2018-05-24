@@ -4,6 +4,7 @@ from person import Person
 from PIL import Image
 
 THRESHOLD_NORMALIZER = float(75)
+THRESHOLD_WEIGHT = float(1)
 
 def read_image_from_disk(name):
 		return face_recognition.load_image_file("data/" + name)
@@ -12,8 +13,9 @@ def getSumIndex(encoding):
     return np.sqrt(np.sum(encoding**2))
 
 def threshold(val):
-    val = float(1) + (val/THRESHOLD_NORMALIZER)
-    return val
+    # val = THRESHOLD_WEIGHT + (val/THRESHOLD_NORMALIZER)
+    # return val
+	return 1
 
 def getEncoding(image, sharpness, image_size):
 	encoding = face_recognition.face_encodings(image,
@@ -42,7 +44,6 @@ def get_sharpness(pil_image):
 	return float(sharpness)
 
 def getFaces(image):
-	'''for each face returns top, right, bottom, left'''
 	faces = face_recognition.face_locations(image)
 	person_list = list()
 	for location in faces:
