@@ -3,8 +3,10 @@ import numpy as np
 from person import Person
 import algorithm as Al
 
-SEARCH_THRESHOLD = float(0.10)
+SEARCH_THRESHOLD = float(0.5)
 PERSON_THRESHOLD = 10
+OPTIMAL_SHARPNESS = float(6.0)
+
 SAVE_DIRECTORY = "data/faces/"
 
 class Shazam():
@@ -25,7 +27,9 @@ class Shazam():
 		return len(self.personList)
 
 	def incrementApperance(self, index):
-		self.personList[index].incrementApperance()
+		# self.personList[index].incrementApperance()
+		self.sorted_sum_index[index].incrementApperance()
+		self.personList = self.sorted_sum_index
 
 	def updatePerson(self, new_person, index):
 		p = self.personList[index]
@@ -43,6 +47,10 @@ class Shazam():
 	# 	person.clearPilImage()
 	# 	self.personList.append(person)
 	# 	self.sortSumIndexes()
+
+	def updateCriteria(self, best, novel):
+		# return best < novel
+		return abs(best - OPTIMAL_SHARPNESS) < abs(novel - OPTIMAL_SHARPNESS)
 
 	def addNewPerson(self, person):
 		person.setId(self.next_id)
@@ -96,7 +104,9 @@ class Shazam():
 		person_list = Al.getFaces(image)
 		for k in range(len(person_list)):
 			p = person_list[k]
-			match_start_index, matches = self.lookUpSumIndex(p)
+			# match_start_index, matches = self.lookUpSumIndex(p)
+			match_start_index = 0
+			matches = self.sorted_sum_index
 			if matches:
 				match_codes = [x.getEncoding() for x in matches]
 				match_results = Al.compare(p.getEncoding(), match_codes)
@@ -105,7 +115,7 @@ class Shazam():
 				best_match = None
 				best_match_val = 1000
 				best_match_index = 0
-				for i in range(len(match_results)):
+				for i in range(len(matches)):
 					if match_results[i]:
 						positive_matches.append(i)
 						pm = matches[i]
@@ -115,11 +125,11 @@ class Shazam():
 							best_match = pm
 							best_match_index = i
 				if best_match:
-					if best_match.getSharpness() < p.getSharpness():
+					if self.updateCriteria(best_match.getSharpness() , p.getSharpness()):
 						print "start={}, k={}, t={}".format(match_start_index, best_match_index, len(self.sorted_sum_index))
 						self.updatePerson(p, match_start_index + best_match_index)
 					else:
-						self.incrementApperance(k)
+						self.incrementApperance(match_start_index + best_match_index)
 				else:
 					self.addNewPerson(p)
 			else:

@@ -50,7 +50,7 @@ class Person():
         assert(self.id > -1)
 
         if self.pil_image:
-            self.pil_image.save(directory_name + str(self.id) + ".jpg")
+            self.pil_image.save(directory_name + str(self.id) + ".jpg", format="JPEG")
         else:
             print "WARNING: PIL Image Already Cleared"
         
