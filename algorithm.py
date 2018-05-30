@@ -3,8 +3,14 @@ import numpy as np
 from person import Person
 from PIL import Image
 
-THRESHOLD_NORMALIZER = float(75)
-THRESHOLD_WEIGHT = float(1)
+THRESHOLD_NORMALIZER = float(50)
+THRESHOLD_WEIGHT = float(1.0)
+
+MIN_IMAGE_HEIGHT = 43
+MIN_IMAGE_WIDTH = 43
+
+def isImageValid(height, width):
+	return ((height >= MIN_IMAGE_HEIGHT) and (width >= MIN_IMAGE_WIDTH))
 
 def read_image_from_disk(name):
 		return face_recognition.load_image_file("data/" + name)
@@ -13,13 +19,14 @@ def getSumIndex(encoding):
     return np.sqrt(np.sum(encoding**2))
 
 def threshold(val):
-    # val = THRESHOLD_WEIGHT + (val/THRESHOLD_NORMALIZER)
-    # return val
-	return 1
+    val = THRESHOLD_WEIGHT + (val/THRESHOLD_NORMALIZER)
+    return val
+	# return 1
 
 def getEncoding(image, sharpness, image_size):
-	encoding = face_recognition.face_encodings(image,
-					known_face_locations=[(0,image_size[0], image_size[1],0)])
+	# encoding = face_recognition.face_encodings(image,
+	# 				known_face_locations=[(0,image_size[0], image_size[1],0)])
+	encoding = face_recognition.face_encodings(image)
 	# print "encoding: ", encoding
 	if len(encoding) == 0:
 		return None
@@ -53,13 +60,16 @@ def getFaces(image):
 		pil_image = getPilImage(face_image)
 		width, height = pil_image.size
 
+		if not isImageValid(height, width):
+			continue
+
 		'''Calculating Params'''
 		face_sharpness = get_sharpness(pil_image)
 		# TODO: Pass the known face locations for better accuracy
 		face_encoding = getEncoding(face_image, face_sharpness, [width, height])
 
 		if face_encoding is None:
-			print "Face Encoding Failed"
+			# print "Face Encoding Failed"
 			continue
 
 		face_sum_index = getSumIndex(face_encoding)

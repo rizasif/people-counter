@@ -2,8 +2,11 @@ import cv2
 import os
 from shazam import Shazam
 
-SAMPLING_RATE = 4
-VIDEO_NAME = "test_sample.mp4"
+SAMPLING_RATE = 2
+
+# VIDEO_NAME = "walking_deed_short.mp4"
+VIDEO_NAME = "walking_deed.mp4"
+# VIDEO_NAME = "test_sample.mp4"
 
 def process_file(filename, sampling_rate):
 	vidcap = cv2.VideoCapture(filename)

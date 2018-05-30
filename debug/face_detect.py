@@ -1,7 +1,7 @@
 import face_recognition
 from PIL import Image
 
-image = face_recognition.load_image_file("data/test2.png")
+image = face_recognition.load_image_file("../data/test4.png")
 faces = face_recognition.face_locations(image)
 
 print faces
@@ -12,9 +12,13 @@ for location in faces:
 
 	face_image = image[top:bottom, left:right]
 	pil_image = Image.fromarray(face_image)
+	width, height = pil_image.size
 
-	face_encoding = face_recognition.face_encodings(face_image)[0]
-	print "face_encoding: ", face_encoding
+	face_encoding = face_recognition.face_encodings(face_image, known_face_locations=[(0,width, height,0)])[0]
+	# print "face_encoding: ", face_encoding
+
+	face_landmark = face_recognition.face_landmarks(face_image, face_locations=[(0,width, height,0)])
+	print "face_landmarks: ", face_landmark[0].keys()
 
 	pil_image.show()
 
