@@ -2,6 +2,7 @@ import numpy as np
 
 from person import Person
 import algorithm as Al
+import gender_age_eval as GA
 
 SEARCH_THRESHOLD = float(0.5)
 PERSON_THRESHOLD = 10
@@ -9,12 +10,17 @@ OPTIMAL_SHARPNESS = float(6.0)
 
 SAVE_DIRECTORY = "data/faces/"
 
+IMAGE_SIZE = 160
+
 class Shazam():
 
 	def __init__(self):
 		self.next_id = int()
 		self.personList = list()
 		self.sorted_sum_index = list()
+
+		print("Loading GA Model")
+		GA.load_session()
 
 	def sortSumIndexes(self):
 		self.sorted_sum_index = sorted(self.personList,
@@ -31,11 +37,24 @@ class Shazam():
 		self.sorted_sum_index[index].incrementApperance()
 		self.personList = self.sorted_sum_index
 
+	def getGenderAge(self, image):
+		# gray = image.convert('L')
+		gray = image.resize((IMAGE_SIZE,IMAGE_SIZE))
+		gray.load()
+		data = np.asarray( gray, dtype="int32" )
+		print("Loaded Image Data Shape: ", data.shape)
+		# ages, genders = GA.eval([data])
+		ages, genders = GA.eval_image([data])
+		return ages[0], genders[0]
+
 	def updatePerson(self, new_person, index):
 		p = self.personList[index]
 		p.incrementApperance()
 		new_person.setId(p.getId())
 		new_person.updateApprerance(p.getApperance())
+		age, gender = self.getGenderAge(new_person.getPilImage())
+		new_person.setAge(int(age))
+		new_person.setGender( (int(gender) == 1) )
 		new_person.saveImage(SAVE_DIRECTORY)
 		new_person.clearPilImage()
 		# self.personList[index] = new_person
@@ -54,6 +73,9 @@ class Shazam():
 
 	def addNewPerson(self, person):
 		person.setId(self.next_id)
+		age, gender = self.getGenderAge(person.getPilImage())
+		person.setAge(int(age))
+		person.setGender( (int(gender) == 1) )
 		person.saveImage(SAVE_DIRECTORY)
 		person.clearPilImage()
 		self.next_id += 1
@@ -126,7 +148,7 @@ class Shazam():
 							best_match_index = i
 				if best_match:
 					if self.updateCriteria(best_match.getSharpness() , p.getSharpness()):
-						print "start={}, k={}, t={}".format(match_start_index, best_match_index, len(self.sorted_sum_index))
+						print ("start={}, k={}, t={}".format(match_start_index, best_match_index, len(self.sorted_sum_index)))
 						self.updatePerson(p, match_start_index + best_match_index)
 					else:
 						self.incrementApperance(match_start_index + best_match_index)
@@ -136,7 +158,10 @@ class Shazam():
 				self.addNewPerson(p)
 
 	def printResults(self):
-		print "Total People: ", len(self.personList)
+		print ("Total People: ", len(self.personList))
+
+		p = self.personList[0]
+		print ("Example Person: \n {} \n------".format(p.getSummary()))
 
 if __name__ == "__main__":
 	shazam = Shazam()
@@ -171,7 +196,7 @@ if __name__ == "__main__":
 					 'test5.png', 'test6.png', 'test7.png']
 	
 	for t in test_images:
-		print "Processing Image: ", t
+		print ("Processing Image: ", t)
 		image = Al.read_image_from_disk(t)
 		shazam.ProcessImage(image)
 

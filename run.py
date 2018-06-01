@@ -18,7 +18,7 @@ def process_file(filename, sampling_rate):
 		if skip % sampling_rate == 0:
 			timestamp = vidcap.get(cv2.cv.CV_CAP_PROP_POS_MSEC)
 			
-			print "Processing Image at {}ms".format(timestamp)
+			print ("Processing Image at {}ms".format(timestamp))
 			mShazam.ProcessImage(image)
 		
 		skip += 1
