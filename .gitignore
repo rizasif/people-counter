@@ -109,3 +109,6 @@ venv.bak/
 #images
 *.jpg
 *.png
+
+#Trained Model
+model/
