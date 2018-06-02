@@ -26,11 +26,11 @@ Follow the steps to run the code:
     ```
     python run.py
     ```
-4) Extract and place trained model files in ```/model`` folder. The files can be downloaded [here](https://mega.nz/#!BfglkI7A!YBvFyxgKhvUnnNRu9FL-ACjdo18SmOZ-YSz9QghQRzE). Or requested by emailing on rizasif@gmail.com. This model is required for age and gender recognition.
+4) Extract and place trained model files in ```/model`` folder. The files can be requested by emailing on rizasif@gmail.com. This model is required for age and gender recognition.
 
 
 ## Dependencies: 
 Note: These are provided in the anaconda environment so no need to install 1&2 separately.
 1) [face_recognition](https://github.com/ageitgey/face_recognition)
 2) [Tensorflow](https://www.tensorflow.org/install/)
-3) Trained model: The files can be downloaded [here](https://mega.nz/#!BfglkI7A!YBvFyxgKhvUnnNRu9FL-ACjdo18SmOZ-YSz9QghQRzE) or you can email me on rizasif@gmail.com to receive the trained model for age and gender recognition.
+3) Trained model: You can email me on rizasif@gmail.com to receive the trained model for age and gender recognition.
