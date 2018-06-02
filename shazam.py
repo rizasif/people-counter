@@ -1,5 +1,5 @@
 import numpy as np
-
+import pandas as pd
 from person import Person
 import algorithm as Al
 import gender_age_eval as GA
@@ -38,7 +38,7 @@ class Shazam():
 		self.personList = self.sorted_sum_index
 
 	def getGenderAge(self, image):
-    		# gray = image.convert('L')
+		# gray = image.convert('L')
 		gray = image.resize((IMAGE_SIZE,IMAGE_SIZE))
 		gray.load()
 		data = np.asarray( gray, dtype="int32" )
@@ -73,6 +73,7 @@ class Shazam():
 
 	def addNewPerson(self, person):
 		person.setId(self.next_id)
+		person.updateApprerance(1)
 		age, gender = self.getGenderAge(person.getPilImage())
 		person.setAge(int(age))
 		person.setGender( (int(gender) == 1) )
@@ -163,6 +164,16 @@ class Shazam():
 		p = self.personList[0]
 		print ("Example Person: \n {} \n------".format(p.getSummary()))
 
+	def saveResults(self):
+		pdList = list()
+		for p in self.personList:
+			pdList.append(p.getSummary())
+
+		df = pd.DataFrame(pdList)
+		# print df
+		df.to_csv("results.csv")
+		print("Results Written to results.csv")
+
 if __name__ == "__main__":
 	shazam = Shazam()
 
@@ -200,4 +211,5 @@ if __name__ == "__main__":
 		image = Al.read_image_from_disk(t)
 		shazam.ProcessImage(image)
 
-	shazam.printResults()
+	# shazam.printResults()
+	shazam.saveResults()
