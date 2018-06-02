@@ -112,4 +112,5 @@ venv.bak/
 *.png
 
 #Trained Model
-model/
+model/*
+!model/.gitkeep
