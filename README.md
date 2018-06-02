@@ -1,4 +1,4 @@
-# people-counter
+# People Counter
 Count the number of people in a video based on facial recognition
 
 ## Installation
