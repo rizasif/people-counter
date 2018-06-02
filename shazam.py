@@ -38,7 +38,7 @@ class Shazam():
 		self.personList = self.sorted_sum_index
 
 	def getGenderAge(self, image):
-		# gray = image.convert('L')
+    		# gray = image.convert('L')
 		gray = image.resize((IMAGE_SIZE,IMAGE_SIZE))
 		gray.load()
 		data = np.asarray( gray, dtype="int32" )
