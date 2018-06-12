@@ -39,7 +39,7 @@ class Person():
         }
 
     def getFilename(self):
-        return str(self.id) + ".jpg"
+        return  str(self.getId()) + "_" + str(self.getTimestamp()) + ".jpg"
 
     def setTimestamp(self, timestamp):
         self.timestamp = timestamp
@@ -84,7 +84,7 @@ class Person():
         assert(self.id > -1)
 
         if self.pil_image:
-            self.pil_image.save(directory_name + str(self.id) + ".jpg", format="JPEG")
+            self.pil_image.save(directory_name + self.getFilename(), format="JPEG")
         else:
             print ("WARNING: PIL Image Already Cleared")
 
