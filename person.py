@@ -39,7 +39,9 @@ class Person():
         }
 
     def getFilename(self):
-        return  str(self.getId()) + "_" + str(self.getTimestamp()) + ".jpg"
+        timestamp = str(self.getTimestamp()).split(":")
+        last = str(int(float(timestamp[2])))
+        return  str(self.getId()) + "_" + timestamp[0] + ":" + timestamp[1] + ":" + last + ".jpg"
 
     def setTimestamp(self, timestamp):
         self.timestamp = timestamp
