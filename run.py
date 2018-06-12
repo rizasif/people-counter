@@ -1,8 +1,9 @@
 import cv2
 import os
 from shazam import Shazam
+import datetime
 
-SAMPLING_RATE = 2
+SAMPLING_RATE = 1000
 
 # VIDEO_NAME = "walking_deed_short.mp4"
 VIDEO_NAME = "walking_deed.mp4"
@@ -19,8 +20,9 @@ def process_file(filename, sampling_rate):
 			timestamp = vidcap.get(cv2.cv.CV_CAP_PROP_POS_MSEC)
 			# timestamp = vidcap.get(cv2.CAP_PROP_POS_MSEC)
 			
-			print ("Processing Image at {}ms".format(timestamp))
-			mShazam.ProcessImage(image)
+			timestamp = str(datetime.timedelta(milliseconds=timestamp))
+			print ("Processing Image at {}".format(timestamp))
+			mShazam.ProcessImage(image, timestamp)
 		
 		skip += 1
 		success,image = vidcap.read()

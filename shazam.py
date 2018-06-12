@@ -51,6 +51,7 @@ class Shazam():
 		p = self.personList[index]
 		p.incrementApperance()
 		new_person.setId(p.getId())
+		new_person.setTimestamp(p.getTimestamp())
 		new_person.updateApprerance(p.getApperance())
 		age, gender = self.getGenderAge(new_person.getPilImage())
 		new_person.setAge(int(age))
@@ -123,8 +124,8 @@ class Shazam():
 		else:
 			return None, None
 
-	def ProcessImage(self, image):
-		person_list = Al.getFaces(image)
+	def ProcessImage(self, image, timestamp):
+		person_list = Al.getFaces(image, timestamp)
 		for k in range(len(person_list)):
 			p = person_list[k]
 			# match_start_index, matches = self.lookUpSumIndex(p)

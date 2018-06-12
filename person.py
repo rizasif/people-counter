@@ -11,8 +11,9 @@ class Person():
     img_array = list()
     gender_sum = int()
     age_sum = int()
+    timestamp = float()
 
-    def __init__(self, sharpness, sum_index, encodings, img_array, pil_image=-1, id=-1):
+    def __init__(self, sharpness, sum_index, encodings, img_array, timestamp, pil_image=-1, id=-1):
         self.id = id
         self.sharpness = sharpness
         self.sum_index = sum_index
@@ -21,6 +22,7 @@ class Person():
         if not pil_image == -1:
             self.pil_image = pil_image
         self.no_of_apperance = 0
+        self.timestamp = timestamp
 
     def getSummary(self):
         return {
@@ -31,8 +33,19 @@ class Person():
             'gender_sum': self.gender_sum,
             'age_sum': self.age_sum,
             'gender': self.getGender(),
-            'age': self.getAge() 
+            'age': self.getAge(),
+            'timestamp': self.timestamp,
+            'filename': self.getFilename()
         }
+
+    def getFilename(self):
+        return str(self.id) + ".jpg"
+
+    def setTimestamp(self, timestamp):
+        self.timestamp = timestamp
+    
+    def getTimestamp(self):
+        return self.timestamp
 
     def getSumIndex(self):
         return self.sum_index

@@ -2,6 +2,7 @@ import face_recognition
 import numpy as np
 from person import Person
 from PIL import Image
+import cv2
 
 THRESHOLD_NORMALIZER = float(50)
 THRESHOLD_WEIGHT = float(1.0)
@@ -38,7 +39,8 @@ def getEncoding(image, sharpness, image_size):
 	return encoding*thresh
 
 def getPilImage(image):
-	pil_image = Image.fromarray(image)
+	array = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
+	pil_image = Image.fromarray(array)
 	return pil_image
 
 def get_sharpness(pil_image):
@@ -50,7 +52,7 @@ def get_sharpness(pil_image):
 	sharpness = np.average(gnorm)
 	return float(sharpness)
 
-def getFaces(image):
+def getFaces(image, timestamp):
 	faces = face_recognition.face_locations(image)
 	person_list = list()
 	for location in faces:
@@ -75,7 +77,8 @@ def getFaces(image):
 		face_sum_index = getSumIndex(face_encoding)
 
 		person = Person(sharpness=face_sharpness, sum_index=face_sum_index,
-						encodings=face_encoding, pil_image=pil_image, img_array=face_image)
+						encodings=face_encoding, pil_image=pil_image, timestamp=timestamp, 
+						img_array=face_image)
 		person_list.append(person)
 	return person_list
 
