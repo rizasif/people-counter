@@ -3,7 +3,7 @@ import os
 from shazam import Shazam
 import datetime
 
-SAMPLING_RATE = 2
+SAMPLING_RATE = 1
 
 # VIDEO_NAME = "walking_deed_short.mp4"
 VIDEO_NAME = "walking_deed.mp4"

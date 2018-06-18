@@ -7,8 +7,8 @@ import cv2
 THRESHOLD_NORMALIZER = float(50)
 THRESHOLD_WEIGHT = float(1.0)
 
-MIN_IMAGE_HEIGHT = 43
-MIN_IMAGE_WIDTH = 43
+MIN_IMAGE_HEIGHT = 10
+MIN_IMAGE_WIDTH = 10
 
 def isImageValid(height, width):
 	return ((height >= MIN_IMAGE_HEIGHT) and (width >= MIN_IMAGE_WIDTH))
@@ -25,9 +25,9 @@ def threshold(val):
 	# return 1
 
 def getEncoding(image, sharpness, image_size):
-	# encoding = face_recognition.face_encodings(image,
-	# 				known_face_locations=[(0,image_size[0], image_size[1],0)])
-	encoding = face_recognition.face_encodings(image)
+	encoding = face_recognition.face_encodings(image,
+					known_face_locations=[(0,image_size[0], image_size[1],0)])
+	# encoding = face_recognition.face_encodings(image)
 	# print "encoding: ", encoding
 	if len(encoding) == 0:
 		return None
