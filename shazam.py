@@ -7,6 +7,7 @@ import gender_age_eval as GA
 SEARCH_THRESHOLD = float(0.5)
 PERSON_THRESHOLD = 10
 OPTIMAL_SHARPNESS = float(6.0)
+THRESH_SHARPNESS = float(3.0)
 
 SAVE_DIRECTORY = "data/faces/"
 
@@ -70,19 +71,24 @@ class Shazam():
 
 	def updateCriteria(self, best, novel):
 		# return best < novel
-		return abs(best - OPTIMAL_SHARPNESS) < abs(novel - OPTIMAL_SHARPNESS)
+		# return abs(best - OPTIMAL_SHARPNESS) < abs(novel - OPTIMAL_SHARPNESS)
+		return (novel > best)
+
+	def additionCriteria(self, sharpness):
+		return sharpness > THRESH_SHARPNESS
 
 	def addNewPerson(self, person):
-		person.setId(self.next_id)
-		person.updateApprerance(1)
-		age, gender = self.getGenderAge(person.getPilImage())
-		person.setAge(int(age))
-		person.setGender( (int(gender) == 1) )
-		person.saveImage(SAVE_DIRECTORY)
-		person.clearPilImage()
-		self.next_id += 1
-		self.personList.append(person)
-		self.sortSumIndexes()
+		if self.additionCriteria(person.getSharpness()):
+			person.setId(self.next_id)
+			person.updateApprerance(1)
+			age, gender = self.getGenderAge(person.getPilImage())
+			person.setAge(int(age))
+			person.setGender( (int(gender) == 1) )
+			person.saveImage(SAVE_DIRECTORY)
+			person.clearPilImage()
+			self.next_id += 1
+			self.personList.append(person)
+			self.sortSumIndexes()
 	
 	def lookUpSumIndex(self, item):
 		a_list = self.sorted_sum_index

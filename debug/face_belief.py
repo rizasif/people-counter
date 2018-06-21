@@ -28,7 +28,7 @@ def threshold(val):
     return val
 
 def get_result(p1,p2):
-    print "Checking {} : {}".format(p1,p2)
+    # print ("Checking {} : {}".format(p1,p2))
 
     image1 = face_recognition.load_image_file("../data/" + p1)
     image2 = face_recognition.load_image_file("../data/" + p2)
@@ -54,10 +54,10 @@ def get_result(p1,p2):
     face_encoding1 = face_encoding1*bs1
     face_encoding2 = face_encoding2*bs2
 
-    print "Sharpness Image1: ", s1
-    print "Image1 Sum: ", np.sqrt(np.sum(face_encoding1**2))
-    print "Sharpness Image2: ", s2
-    print "Image2 Sum: ", np.sqrt(np.sum(face_encoding2**2))
+    # print ("Sharpness Image1: ", s1)
+    # print ("Image1 Sum: ", np.sqrt(np.sum(face_encoding1**2)))
+    # print "Sharpness Image2: ", s2
+    # print "Image2 Sum: ", np.sqrt(np.sum(face_encoding2**2))
 
     results = face_recognition.compare_faces([face_encoding1], face_encoding2)
     # print results
@@ -96,7 +96,7 @@ for type in AllTypes:
             false_negatives += 1
             # print "False"
         total += 3
-print "\nFalse Negatives {} of {}".format(false_negatives, total)
+print ("\nFalse Negatives {} of {}".format(false_negatives, total))
 
 total = 0
 false_positives = 0
@@ -110,4 +110,4 @@ for i in range(len(AllTypes)):
                 #    print "False"
                 total += 1 
 
-print "False Positives {} of {}".format(false_positives, total)
+print ("False Positives {} of {}".format(false_positives, total))

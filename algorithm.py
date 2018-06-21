@@ -4,7 +4,7 @@ from person import Person
 from PIL import Image
 import cv2
 
-THRESHOLD_NORMALIZER = float(50)
+THRESHOLD_NORMALIZER = float(42.5)
 THRESHOLD_WEIGHT = float(1.0)
 
 MIN_IMAGE_HEIGHT = 10

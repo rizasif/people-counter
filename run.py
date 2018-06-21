@@ -6,7 +6,7 @@ import datetime
 SAMPLING_RATE = 1
 
 # VIDEO_NAME = "walking_deed_short.mp4"
-VIDEO_NAME = "walking_deed.mp4"
+VIDEO_NAME = "demo6.mp4"
 # VIDEO_NAME = "test_sample.mp4"
 
 def process_file(filename, sampling_rate):

@@ -2,7 +2,7 @@ import face_recognition
 import numpy as np
 from PIL import Image
 
-image = face_recognition.load_image_file("data/faceA3.png")
+image = face_recognition.load_image_file("../data/test9.jpg")
 
 pil_image = Image.fromarray(image)
 pil_image = pil_image.convert('L')
@@ -12,4 +12,4 @@ gy, gx = np.gradient(array)
 gnorm = np.sqrt(gx**2 + gy**2)
 sharpness = np.average(gnorm)
 
-print sharpness
+print (sharpness)
