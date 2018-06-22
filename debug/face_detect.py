@@ -4,11 +4,11 @@ from PIL import Image
 image = face_recognition.load_image_file("../data/test4.png")
 faces = face_recognition.face_locations(image)
 
-print faces
+# print faces
 
 for location in faces:
 	top, right, bottom, left = location
-	print "Face Location {} {} {} {}".format(top,right,bottom,left)
+	# print "Face Location {} {} {} {}".format(top,right,bottom,left)
 
 	face_image = image[top:bottom, left:right]
 	pil_image = Image.fromarray(face_image)
@@ -18,7 +18,12 @@ for location in faces:
 	# print "face_encoding: ", face_encoding
 
 	face_landmark = face_recognition.face_landmarks(face_image, face_locations=[(0,width, height,0)])
-	print "face_landmarks: ", face_landmark[0].keys()
+	# print "face_landmarks: ", face_landmark[0].keys()
+
+	# rim = Image.new("RGB", (160,160))
+	# rim.paste(pil_image, (int(160/2), int(160/2)))
+
+	# rim.show()
 
 	pil_image.show()
 

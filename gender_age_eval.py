@@ -58,7 +58,7 @@ def load_session(model_path=MODEL_PATH):
 	images = tf.map_fn(lambda frame: tf.reverse_v2(frame, [-1]), images_pl) #BGR TO RGB
 	images_norm = tf.map_fn(lambda frame: tf.image.per_image_standardization(frame), images)
 	train_mode = tf.placeholder(tf.bool)
-	age_logits, gender_logits, _ = inception_resnet_v1.inference(images_norm, keep_probability=0.8,
+	age_logits, gender_logits, _ = inception_resnet_v1.inference(images_norm, keep_probability=1.0, #0.8
 																	phase_train=train_mode,
 																	weight_decay=1e-5)
 	gender = tf.argmax(tf.nn.softmax(gender_logits), 1)

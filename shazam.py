@@ -48,21 +48,27 @@ class Shazam():
 		ages, genders = GA.eval_image([data])
 		return ages[0], genders[0]
 
-	def updatePerson(self, new_person, index):
-		p = self.personList[index]
+	def updatePerson(self, new_person, index, save_image=False):
+		p = self.sorted_sum_index[index]
+		print("Updating id.{} at index {}".format(p.getId(), index))
 		p.incrementApperance()
+		age, gender = self.getGenderAge(new_person.getPilImage())
+		p.setAge(int(age))
+		p.setGender((int(gender) == 1))
+		
 		new_person.setId(p.getId())
 		new_person.setTimestamp(p.getTimestamp())
 		new_person.updateApprerance(p.getApperance())
-		age, gender = self.getGenderAge(new_person.getPilImage())
-		new_person.setAge(int(age))
-		new_person.setGender( (int(gender) == 1) )
-		new_person.saveImage(SAVE_DIRECTORY)
+		new_person.putAge(p.getAgeSum())
+		new_person.putGender(p.getGenderSum())
+		if save_image:
+			new_person.saveImage(SAVE_DIRECTORY)
 		new_person.clearPilImage()
 		# self.personList[index] = new_person
 		self.sorted_sum_index[index] = new_person
 		self.personList = self.sorted_sum_index
 		self.sortSumIndexes()
+		print("Updated Person:\n{}".format(new_person.getSummary()))
 
 	# def addPerson(self, person):
 	# 	person.clearPilImage()
@@ -149,7 +155,7 @@ class Shazam():
 					if match_results[i]:
 						positive_matches.append(i)
 						pm = matches[i]
-						new_val = abs(pm.getSumIndex() - p.getSumIndex())
+						new_val = 0.9*(abs(pm.getSumIndex() - p.getSumIndex())) - 0.1*(1.0/float(self.next_id-pm.getId()))
 						if best_match_val > new_val:
 							best_match_val = new_val
 							best_match = pm
@@ -157,9 +163,11 @@ class Shazam():
 				if best_match:
 					if self.updateCriteria(best_match.getSharpness() , p.getSharpness()):
 						print ("start={}, k={}, t={}".format(match_start_index, best_match_index, len(self.sorted_sum_index)))
-						self.updatePerson(p, match_start_index + best_match_index)
+						self.updatePerson(p, match_start_index + best_match_index, save_image=False)
 					else:
-						self.incrementApperance(match_start_index + best_match_index)
+						# self.incrementApperance(match_start_index + best_match_index)
+						# pass
+						self.updatePerson(p, match_start_index + best_match_index, save_image=False)
 				else:
 					self.addNewPerson(p)
 			else:

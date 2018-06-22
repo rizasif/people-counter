@@ -1,3 +1,5 @@
+import math
+
 MALE=1
 FEMALE=0
 
@@ -98,14 +100,36 @@ class Person():
 
     def getGender(self):
         score = float(self.gender_sum)/float(self.no_of_apperance)
-        if score > 0.5:
+        if score >= 0.5: #0.05
             return MALE
         else:
             return FEMALE
 
+    def getGenderSum(self):
+        return self.gender_sum
+
+    def putGender(self, gender_sum):
+        self.gender_sum = gender_sum
+
     def setAge(self, age):
+        assert(age > 0)
         self.age_sum += age
+        # if self.age_sum > age:
+        #     self.age_sum = age
 
     def getAge(self):
-        return float(self.age_sum)/float(self.no_of_apperance)
+        # return float(self.age_sum)/float(self.no_of_apperance)
+
+        # val = float(self.age_sum)/float(self.no_of_apperance)
+        # val += 2.0
+        # return val*abs(math.log(val))
+
+        val = float(self.age_sum)/float(self.no_of_apperance)
+        return val
+
+    def getAgeSum(self):
+        return self.age_sum
+
+    def putAge(self, age_sum):
+        self.age_sum = age_sum
         
