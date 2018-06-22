@@ -79,7 +79,7 @@ def load_session(model_path=MODEL_PATH):
 		saver.restore(sess, ckpt.model_checkpoint_path)
 		print("restore and continue training!")
 	else:
-		pass
+		assert(False)
 	
 	SESSION = sess
 
