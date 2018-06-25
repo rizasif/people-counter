@@ -20,15 +20,21 @@ GENDER = None
 IMAGES_PL = None
 TRAIN_MODE = None
 
+# Tensorflow configuration to use CPU instead of GPU
+tf_config = tf.ConfigProto(
+	device_count = {'GPU': 0}
+	)
+
 def load_session(model_path=MODEL_PATH):
 	global SESSION
 	global AGE
 	global GENDER
 	global IMAGES_PL
 	global TRAIN_MODE
+	global tf_config
 
 	graph = tf.Graph().as_default()
-	sess = tf.Session()
+	sess = tf.Session(config=tf_config)
 	images_pl = tf.placeholder(tf.float32, shape=[None, 160, 160, 3], name='input_image')
 	images = tf.map_fn(lambda frame: tf.reverse_v2(frame, [-1]), images_pl) #BGR TO RGB
 	images_norm = tf.map_fn(lambda frame: tf.image.per_image_standardization(frame), images)
