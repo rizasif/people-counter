@@ -57,7 +57,7 @@ def load_session(model_path=MODEL_PATH):
 	ckpt = tf.train.get_checkpoint_state(model_path)
 	if ckpt and ckpt.model_checkpoint_path:
 		saver.restore(sess, ckpt.model_checkpoint_path)
-		print("restore and continue training!")
+		print("restore and continue training! : {}".format(ckpt.model_checkpoint_path))
 	else:
 		sys.exit("Age-Gender Model not found")
 	

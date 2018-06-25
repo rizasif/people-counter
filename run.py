@@ -17,8 +17,8 @@ def process_file(filename, sampling_rate):
 	skip = 0
 	while vidcap.isOpened():
 		if skip % sampling_rate == 0:
-			timestamp = vidcap.get(cv2.cv.CV_CAP_PROP_POS_MSEC)
-			# timestamp = vidcap.get(cv2.CAP_PROP_POS_MSEC)
+			# timestamp = vidcap.get(cv2.cv.CV_CAP_PROP_POS_MSEC)
+			timestamp = vidcap.get(cv2.CAP_PROP_POS_MSEC)
 			
 			timestamp = str(datetime.timedelta(milliseconds=timestamp))
 			print ("Processing Image at {}".format(timestamp))
