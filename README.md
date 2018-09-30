@@ -26,7 +26,7 @@ Follow the steps to run the code:
     ```
     python run.py
     ```
-4) Extract and place trained model files in ```/model`` folder. The files can be requested by emailing on contact@rizasif.com. This model is required for age and gender recognition.
+4) Extract and place trained model files in ```/model``` folder. The files can be requested by emailing on contact@rizasif.com. This model is required for age and gender recognition.
 
 
 ## Dependencies: 
